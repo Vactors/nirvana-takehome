@@ -1,0 +1,26 @@
+services:
+  mysql:
+    ports:
+    - "3306:3306"
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: nirvana
+      MYSQL_DATABASE: nirvana
+      MYSQL_USER: nirvana
+      MYSQL_PASSWORD: nirvana
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+  webserver:
+    build: ./backend
+    ports:
+    - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+  client:
+    build: ./frontend
+    ports:
+    - "3001:3001"
